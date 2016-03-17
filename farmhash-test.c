@@ -3201,7 +3201,7 @@ bool farmhash_sa_test(int offset, int len) {
 
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
 
 // Return false only if offset is -1 and a spot check of 3 hashes all yield 0.
 bool farmhash_su_test(int offset, int len) {
@@ -3425,7 +3425,7 @@ void farmhash_sa_dump(int offset, int len) {
 
 #endif
 
-#if CAN_USE_SSE42 && CAN_USE_AESNIaesni
+#if CAN_USE_SSE42 && CAN_USE_AESNI
 
 // After the following line is where the code to print hash codes will go.
 void farmhash_su_dump(int offset, int len) {
@@ -3496,7 +3496,7 @@ enum farmhash_variant {
   farmhash_sa = 'a',
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
   farmhash_su = 's',
 #endif
 
@@ -3529,7 +3529,7 @@ static enum farmhash_variant to_variant(const char variant) {
       return farmhash_sa;
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
     case farmhash_su:
       return farmhash_su;
 #endif
@@ -3568,7 +3568,7 @@ static const char* to_string(const enum farmhash_variant variant) {
       return "sa";
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
     case farmhash_su:
       return "su";
 #endif
@@ -3607,7 +3607,7 @@ static bool (*to_test(const enum farmhash_variant variant))(int, int) {
       return farmhash_sa_test;
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
     case farmhash_su:
       return farmhash_su_test;
 #endif
@@ -3646,7 +3646,7 @@ static void (*to_dump(const enum farmhash_variant variant))(int, int) {
       return farmhash_sa_dump;
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
     case farmhash_su:
       return farmhash_su_dump;
 #endif
@@ -3758,7 +3758,7 @@ int main(int argc, char* argv[]) {
       dump(farmhash_sa);
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
       dump(farmhash_su);
 #endif
 
@@ -3782,7 +3782,7 @@ int main(int argc, char* argv[]) {
       test(farmhash_sa);
 #endif
 
-#if CAN_USE_AESNIaesni && CAN_USE_SSE42
+#if CAN_USE_AESNI && CAN_USE_SSE42
       test(farmhash_su);
 #endif
 

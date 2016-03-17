@@ -31,13 +31,10 @@
 
 #include "farmhash.c"
 
-static const uint64_t k_seed0 = 1234567;
-static const uint64_t k_seed1 = k0;
-
-static const int k_data_size = 1 << 20;
+static const int k_data_size = 1048576;
 static const int k_test_size = 300;
 
-static char data[k_data_size];
+static char data[1048576]; // k_data_size
 
 static int errors = 0;
 

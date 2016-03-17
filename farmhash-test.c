@@ -913,6 +913,7 @@ static const uint32_t farmhash_mk_expected[] = {
     4207814196u, 4183030708u, 2462810989u, 3929965401u,
 };
 
+#if x86_64 && CAN_USE_SSE41
 static const uint32_t farmhash_nt_expected[] = {
     2681724312u, 797982799u,  921001710u,  2134990486u, 2244477846u,
     2992121793u, 3943596029u, 452431531u,  2557197665u, 2532580744u,
@@ -1060,7 +1061,9 @@ static const uint32_t farmhash_nt_expected[] = {
     3678660147u, 2656772270u, 1997584981u, 2668998785u, 2954162084u,
     845687881u,  776018378u,  2066910012u, 918315064u,
 };
+#endif
 
+#if CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
 static const uint32_t farmhash_sa_expected[] = {
     4223616069u, 3696677242u, 4081014168u, 2576519988u, 2212771159u,
     1112731063u, 1020067935u, 3955445564u, 1451961420u, 653440099u,
@@ -1208,7 +1211,9 @@ static const uint32_t farmhash_sa_expected[] = {
     2087728055u, 2942005882u, 3386522440u, 714936074u,  261924004u,
     3268784033u, 1141188757u, 2413217552u, 1515163433u,
 };
+#endif
 
+#if CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
 static const uint32_t farmhash_su_expected[] = {
     4223616069u, 3696677242u, 4081014168u, 2576519988u, 2212771159u,
     1112731063u, 1020067935u, 3955445564u, 1451961420u, 653440099u,
@@ -1356,6 +1361,7 @@ static const uint32_t farmhash_su_expected[] = {
     2291296392u, 3267864332u, 1282145528u, 3700108015u, 1932843667u,
     2677701670u, 6041177u,    3889648557u, 1461025478u,
 };
+#endif
 
 static const uint32_t farmhash_na_expected[] = {
     1140953930u, 861465670u,  3277735313u, 2681724312u, 2598464059u,
@@ -1795,6 +1801,7 @@ static const uint32_t farmhash_na_expected[] = {
     4166253320u, 2747410691u,
 };
 
+#if x86_64 && CAN_USE_SSSE3 && CAN_USE_SSE41
 static const uint32_t farmhash_te_expected[] = {
     1140953930u, 861465670u,  3277735313u, 2681724312u, 2598464059u,
     797982799u,  890626835u,  800175912u,  2603993599u, 921001710u,
@@ -2232,6 +2239,7 @@ static const uint32_t farmhash_te_expected[] = {
     776018378u,  1137560602u, 1938378389u, 1748082354u, 2066910012u,
     2677675207u, 918315064u,
 };
+#endif
 
 uint32_t farmhash_uo_expected[] = {
     3277735313u, 2681724312u, 2598464059u, 797982799u,  2603993599u,
@@ -3175,7 +3183,7 @@ bool farmhash_nt_test(int offset, int len) {
 
 #endif
 
-#if CAN_USE_SSE42
+#if CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
 
 // Return false only if offset is -1 and a spot check of 3 hashes all yield 0.
 bool farmhash_sa_test(int offset, int len) {
@@ -3198,7 +3206,7 @@ bool farmhash_sa_test(int offset, int len) {
 
 #endif
 
-#if CAN_USE_AESNI && CAN_USE_SSE42
+#if CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
 
 // Return false only if offset is -1 and a spot check of 3 hashes all yield 0.
 bool farmhash_su_test(int offset, int len) {
@@ -3221,7 +3229,7 @@ bool farmhash_su_test(int offset, int len) {
 
 #endif
 
-#if x86_64 && CAN_USE_SSE41
+#if x86_64 && CAN_USE_SSSE3 && CAN_USE_SSE41
 
 // Return false only if offset is -1 and a spot check of 3 hashes all yield 0.
 bool farmhash_te_test(int offset, int len) {
@@ -3402,7 +3410,7 @@ void farmhash_na_dump(int offset, int len) {
   }
 }
 
-#if CAN_USE_SSE41 && x86_64
+#if x86_64 && CAN_USE_SSE41
 
 // After the following line is where the code to print hash codes will go.
 void farmhash_nt_dump(int offset, int len) {
@@ -3412,7 +3420,7 @@ void farmhash_nt_dump(int offset, int len) {
 
 #endif
 
-#if CAN_USE_SSE42
+#if CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
 
 // After the following line is where the code to print hash codes will go.
 void farmhash_sa_dump(int offset, int len) {
@@ -3422,7 +3430,7 @@ void farmhash_sa_dump(int offset, int len) {
 
 #endif
 
-#if CAN_USE_SSE42 && CAN_USE_AESNI
+#if CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
 
 // After the following line is where the code to print hash codes will go.
 void farmhash_su_dump(int offset, int len) {
@@ -3432,7 +3440,7 @@ void farmhash_su_dump(int offset, int len) {
 
 #endif
 
-#if CAN_USE_SSE41 && x86_64
+#if x86_64 && CAN_USE_SSSE3 && CAN_USE_SSE41
 
 // After the following line is where the code to print hash codes will go.
 void farmhash_te_dump(int offset, int len) {
@@ -3751,16 +3759,15 @@ int main(int argc, char* argv[]) {
       dump(farmhash_nt);
 #endif
 
-#if CAN_USE_SSE42
+#if CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
       dump(farmhash_sa);
 #endif
 
-#if CAN_USE_AESNI && CAN_USE_SSE42
+#if CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
       dump(farmhash_su);
 #endif
 
-
-#if x86_64 && CAN_USE_SSE41
+#if x86_64 && CAN_USE_SSSE3 && CAN_USE_SSE41
       dump(farmhash_te);
 #endif
 
@@ -3775,16 +3782,15 @@ int main(int argc, char* argv[]) {
       test(farmhash_nt);
 #endif
 
-#if CAN_USE_SSE42
+#if CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
       test(farmhash_sa);
 #endif
 
-#if CAN_USE_AESNI && CAN_USE_SSE42
+#if CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
       test(farmhash_su);
 #endif
 
-
-#if x86_64 && CAN_USE_SSE41
+#if x86_64 && CAN_USE_SSSE3 && CAN_USE_SSE41
       test(farmhash_te);
 #endif
 

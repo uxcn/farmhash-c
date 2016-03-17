@@ -41,14 +41,14 @@
 #endif
 
 #if defined(__SSSE3__)
-#include <immintrin.h>
+#include <tmmintrin.h>
 #define CAN_USE_SSSE3 1  // Now we can use _mm_hsub_epi16 and so on.
 #else
 #define CAN_USE_SSSE3 0
 #endif
 
 #if defined(__SSE4_1__)
-#include <immintrin.h>
+#include <smmintrin.h>
 #define CAN_USE_SSE41 1  // Now we can use _mm_insert_epi64 and so on.
 #else
 #define CAN_USE_SSE41 0
@@ -635,7 +635,7 @@ uint64_t farmhash64_xo_with_seed(const char *s, size_t len, uint64_t seed) {
 
 // farmhash te
 
-#if x86_64 && CAN_USE_SSE41
+#if x86_64 && CAN_USE_SSSE3 && CAN_USE_SSE41
 
 // Requires n >= 256.  Requires SSE4.1. Should be slightly faster if the
 // compiler uses AVX instructions (e.g., use the -mavx flag with GCC).
@@ -955,7 +955,7 @@ uint32_t farmhash32_mk_with_seed(const char *s, size_t len, uint32_t seed) {
 
 // farmhash su
 
-#if CAN_USE_AESNI && CAN_USE_SSE42
+#if CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
 
 uint32_t farmhash32_su(const char *s, size_t len) {
   const uint32_t seed = 81;
@@ -1116,7 +1116,7 @@ uint32_t farmhash32_su_with_seed(const char *s, size_t len, uint32_t seed) {
 
 // farmhash sa
 
-#if CAN_USE_SSE42
+#if CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
 
 uint32_t farmhash32_sa(const char *s, size_t len) {
   const uint32_t seed = 81;
@@ -1546,11 +1546,11 @@ uint128_t farmhash_cc_fingerprint128(const char* s, size_t len) {
 uint32_t farmhash32(const char* s, size_t len) {
   return debug_tweak32(
 
-#if CAN_USE_SSE41 && x86_64
+#if x86_64 && CAN_USE_SSE41
       farmhash32_nt(s, len)
-#elif CAN_USE_SSE42 && CAN_USE_AESNI
+#elif CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
       farmhash32_su(s, len)
-#elif CAN_USE_SSE42
+#elif CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
       farmhash32_sa(s, len)
 #else
       farmhash32_mk(s, len)
@@ -1566,11 +1566,11 @@ uint32_t farmhash32(const char* s, size_t len) {
 uint32_t farmhash32_with_seed(const char* s, size_t len, uint32_t seed) {
   return debug_tweak32(
 
-#if CAN_USE_SSE41 && x86_64
+#if x86_64 && CAN_USE_SSE41
       farmhash32_nt_with_seed(s, len, seed)
-#elif CAN_USE_SSE42 && CAN_USE_AESNI
+#elif CAN_USE_SSE41 && CAN_USE_SSE42 && CAN_USE_AESNI
       farmhash32_su_with_seed(s, len, seed)
-#elif CAN_USE_SSE42
+#elif CAN_USE_SSSE3 && CAN_USE_SSE41 && CAN_USE_SSE42
       farmhash32_sa_with_seed(s, len, seed)
 #else
       farmhash32_mk_with_seed(s, len, seed)
@@ -1585,7 +1585,7 @@ uint32_t farmhash32_with_seed(const char* s, size_t len, uint32_t seed) {
 // depending on NDEBUG.
 uint64_t farmhash64(const char* s, size_t len) {
   return debug_tweak64(
-#if CAN_USE_SSE42 && x86_64
+#if x86_64 && CAN_USE_SSSE3 && CAN_USE_SSE41
       farmhash64_te(s, len)
 #else
       farmhash64_xo(s, len)
